@@ -6,21 +6,21 @@
     <link type="text/css" rel="stylesheet" href="css/style.css">
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
   </head>
-  <body ng-init="cameras = [{id: 1,name: 'Nikon D3100 DSLR',image: 'http://ecx.images-amazon.com/images/I/713u2gDQqML._SX522_.jpg',rating: 4,price: 369.99,onSale: true},{id: 2,name: 'Canon EOS 70D',image: 'http://ecx.images-amazon.com/images/I/81U00AkAUWL._SX522_.jpg',rating: 2,price: 1099.0,onSale: false},{id: 3,name: 'Nikon D810A',image:'http://ecx.images-amazon.com/images/I/91wtXIfLl2L._SX522_.jpg',rating: 3,price: 3796.95,onSale: true}]">
+  <body ng-controller="cartManagerCtrl as cartManager">
     <div class="container">
       <header>
         <h1>Camera Shop</h1>
       </header>
-      <main>
-        
+      <main ng-controller="itemCatalogCtrl as itemCatalog">
+
         <div class="row">
           <div class="col s12 m8">
             <div class="row">
               <div class="col s8 input-field">
-                <input type="text" placeholder="Search here" ng-model="searchInput">
+                <input type="text" placeholder="Search here" ng-model="itemCatalog.search">
               </div>
               <div class="col s4 input-field">
-                <select ng-init="dropDown = 'name'" ng-model="dropDown">
+                <select ng-model="itemCatalog.dropDown">
                   <option value="name" >Name</option>
                   <option value="rating">Rating</option>
                 </select>
@@ -33,6 +33,23 @@
               <div class="card-content white-text">
                 <span class="card-title">Your Cart</span>
               </div>
+                <ul class="green-text">
+                  <p ng-repeat="item in cartManager.itemsInCart track by $index">{{item.quantity}} {{item.name}}<button>X</button></p>
+                </ul>
+              <div class="white-text">
+                <p>subtotal</p>
+                <p class="right-align"> {{cartManager.subtotal | currency}}</p>
+              </div>
+
+
+              <div class="white-text">
+                <p>tax</p>
+                <p class="right-align"> 2.3</p>
+              </div>
+              <div class="white-text">
+                <p>total</p>
+                <p class="right-align"> so much</p>
+              </div>
               <div class="card-action">
                 <a href="#">Checkout</a>
               </div>
@@ -41,21 +58,24 @@
         </div>
 
         <div>
-          <ul ng-repeat="camera in cameras | orderBy:dropDown | filter:searchInput" >
+          <ul ng-repeat="camera in itemCatalog.cameras | orderBy:itemCatalog.dropDown | filter:itemCatalog.search" >
             <h3>{{camera.name}}</h3>
             <img ng-src="{{camera.image}}"/>
             <h4 ng-if="camera.onSale" style="color:green">{{camera.price | currency}} ON SALE!!</h4>
             <h4 ng-if="!camera.onSale">{{camera.price | currency}}</h4>
             <p>Rating: {{camera.rating | astericks}}</p>
+            <a class="waves-effect waves-light btn" ng-click="cartManager.addItem(camera)">Add to Cart</a>
             <hr>
           </ul>
         </div>
 
       </main>
     </div>
+
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/materialize.min.js"></script>
     <script src="js/app.js"></script>
+    <script src="controllers.js"></script>
   </body>
 </html>
